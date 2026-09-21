@@ -248,14 +248,17 @@ async function pesquisarCidade(nome) {
     try {
 
         mostrarLoading(true);
+
         esconderErro();
 
-        const cidade = await buscarCidade(nome);
+        const cidade =
+            await buscarCidade(nome);
 
-        const clima = await buscarClima(
-            cidade.latitude,
-            cidade.longitude
-        );
+        const clima =
+            await buscarClima(
+                cidade.latitude,
+                cidade.longitude
+            );
 
         renderizarClima(
             clima,
@@ -292,6 +295,7 @@ function obterLocalizacao() {
     }
 
     mostrarLoading(true);
+
     esconderErro();
 
     navigator.geolocation.getCurrentPosition(
@@ -351,7 +355,8 @@ function renderizarClima(
     country
 ) {
 
-    const current = data.current;
+    const current =
+        data.current;
 
     const weather =
         weatherCodes[current.weather_code]
@@ -368,12 +373,19 @@ function renderizarClima(
             : cityName;
 
 
+    /* Atualizar botão de favorito */
+
+    atualizarBotaoFavorito(cityName);
+
+
     /* Data */
 
     document.getElementById(
         "current-date"
     ).textContent =
-        formatarData(data.current.time);
+        formatarData(
+            data.current.time
+        );
 
 
     /* Temperatura */
@@ -381,7 +393,9 @@ function renderizarClima(
     document.getElementById(
         "temperature"
     ).textContent =
-        `${Math.round(current.temperature_2m)}°`;
+        `${Math.round(
+            current.temperature_2m
+        )}°`;
 
 
     document.getElementById(
@@ -480,20 +494,23 @@ function renderizarPrevisao(daily) {
 
 
             const card =
-                document.createElement("article");
+                document.createElement(
+                    "article"
+                );
 
             card.className =
                 "forecast-card";
 
 
             const day =
-                new Date(`${date}T12:00:00`)
-                    .toLocaleDateString(
-                        "pt-BR",
-                        {
-                            weekday: "short"
-                        }
-                    );
+                new Date(
+                    `${date}T12:00:00`
+                ).toLocaleDateString(
+                    "pt-BR",
+                    {
+                        weekday: "short"
+                    }
+                );
 
 
             card.innerHTML = `
@@ -573,10 +590,12 @@ function alternarTema() {
         "light-theme"
     );
 
+
     const light =
         document.body.classList.contains(
             "light-theme"
         );
+
 
     localStorage.setItem(
         "theme",
@@ -588,7 +607,10 @@ function alternarTema() {
 function carregarTema() {
 
     const theme =
-        localStorage.getItem("theme");
+        localStorage.getItem(
+            "theme"
+        );
+
 
     if (theme === "light") {
 
@@ -618,23 +640,33 @@ function salvarFavorito(city) {
     const favoritos =
         obterFavoritos();
 
-    if (
-        !favoritos.some(
+
+    const jaExiste =
+        favoritos.some(
             item =>
-                item.toLowerCase()
-                === city.toLowerCase()
-        )
-    ) {
+                item.toLowerCase() ===
+                city.toLowerCase()
+        );
+
+
+    if (!jaExiste) {
 
         favoritos.push(city);
 
         localStorage.setItem(
             "weather-favorites",
-            JSON.stringify(favoritos)
+            JSON.stringify(
+                favoritos
+            )
         );
     }
 
+
     renderizarFavoritos();
+
+    atualizarBotaoFavorito(
+        city
+    );
 }
 
 
@@ -644,15 +676,24 @@ function removerFavorito(city) {
         obterFavoritos()
             .filter(
                 item =>
-                    item !== city
+                    item.toLowerCase() !==
+                    city.toLowerCase()
             );
+
 
     localStorage.setItem(
         "weather-favorites",
-        JSON.stringify(favoritos)
+        JSON.stringify(
+            favoritos
+        )
     );
 
+
     renderizarFavoritos();
+
+    atualizarBotaoFavorito(
+        city
+    );
 }
 
 
@@ -660,6 +701,7 @@ function renderizarFavoritos() {
 
     const favoritos =
         obterFavoritos();
+
 
     favorites.innerHTML = "";
 
@@ -680,7 +722,10 @@ function renderizarFavoritos() {
         city => {
 
             const item =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             item.className =
                 "favorite";
@@ -706,7 +751,9 @@ function renderizarFavoritos() {
 
 
             item
-                .querySelector(".favorite-city")
+                .querySelector(
+                    ".favorite-city"
+                )
                 .addEventListener(
                     "click",
                     () => pesquisarCidade(city)
@@ -714,16 +761,181 @@ function renderizarFavoritos() {
 
 
             item
-                .querySelector(".favorite-remove")
+                .querySelector(
+                    ".favorite-remove"
+                )
                 .addEventListener(
                     "click",
                     () => removerFavorito(city)
                 );
 
 
-            favorites.appendChild(item);
+            favorites.appendChild(
+                item
+            );
         }
     );
+}
+
+
+/* =========================================
+   BOTÃO DE FAVORITO
+========================================= */
+
+function criarBotaoFavorito() {
+
+    const currentCard =
+        document.getElementById(
+            "current-weather"
+        );
+
+
+    if (!currentCard) {
+        return;
+    }
+
+
+    if (
+        document.getElementById(
+            "favorite-current-button"
+        )
+    ) {
+        return;
+    }
+
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+
+    button.id =
+        "favorite-current-button";
+
+
+    button.className =
+        "secondary-button ripple";
+
+
+    button.type =
+        "button";
+
+
+    button.textContent =
+        "☆ Adicionar aos favoritos";
+
+
+    button.addEventListener(
+        "click",
+        adicionarCidadeAtualAosFavoritos
+    );
+
+
+    const stats =
+        currentCard.querySelector(
+            ".weather-stats"
+        );
+
+
+    if (stats) {
+
+        stats.insertAdjacentElement(
+            "afterend",
+            button
+        );
+
+    } else {
+
+        currentCard.appendChild(
+            button
+        );
+    }
+}
+
+
+function adicionarCidadeAtualAosFavoritos() {
+
+    const location =
+        document.getElementById(
+            "location-name"
+        ).textContent
+            .split(",")[0]
+            .trim();
+
+
+    if (
+        !location ||
+        location === "Minha localização"
+    ) {
+        return;
+    }
+
+
+    const favoritos =
+        obterFavoritos();
+
+
+    const jaExiste =
+        favoritos.some(
+            city =>
+                city.toLowerCase() ===
+                location.toLowerCase()
+        );
+
+
+    if (jaExiste) {
+
+        removerFavorito(
+            location
+        );
+
+    } else {
+
+        salvarFavorito(
+            location
+        );
+    }
+}
+
+
+function atualizarBotaoFavorito(
+    cityName
+) {
+
+    const button =
+        document.getElementById(
+            "favorite-current-button"
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    const favoritos =
+        obterFavoritos();
+
+
+    const jaExiste =
+        favoritos.some(
+            city =>
+                city.toLowerCase() ===
+                cityName.toLowerCase()
+        );
+
+
+    if (jaExiste) {
+
+        button.textContent =
+            "⭐ Remover dos favoritos";
+
+    } else {
+
+        button.textContent =
+            "☆ Adicionar aos favoritos";
+    }
 }
 
 
@@ -744,10 +956,15 @@ function salvarUltimaCidade(city) {
    DATA
 ========================================= */
 
-function formatarData(dateString) {
+function formatarData(
+    dateString
+) {
 
     const date =
-        new Date(dateString);
+        new Date(
+            dateString
+        );
+
 
     return date.toLocaleDateString(
         "pt-BR",
@@ -782,9 +999,11 @@ function mostrarErro(message) {
     errorMessage.textContent =
         `⚠ ${message}`;
 
+
     errorMessage.classList.remove(
         "hidden"
     );
+
 
     weatherContent.classList.add(
         "hidden"
@@ -810,9 +1029,12 @@ function limparTela() {
         "hidden"
     );
 
+
     esconderErro();
 
+
     input.value = "";
+
 
     document.body.classList.remove(
         "weather-sunny",
@@ -820,6 +1042,7 @@ function limparTela() {
         "weather-cloudy",
         "weather-night"
     );
+
 
     document.body.classList.add(
         "weather-default"
@@ -833,43 +1056,48 @@ function limparTela() {
 
 document
     .querySelectorAll(".ripple")
-    .forEach(button => {
+    .forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            function (event) {
+            button.addEventListener(
+                "click",
+                function (event) {
 
-                const ripple =
-                    document.createElement(
-                        "span"
+                    const ripple =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    ripple.className =
+                        "ripple-effect";
+
+
+                    const rect =
+                        this.getBoundingClientRect();
+
+
+                    ripple.style.left =
+                        `${event.clientX - rect.left}px`;
+
+
+                    ripple.style.top =
+                        `${event.clientY - rect.top}px`;
+
+
+                    this.appendChild(
+                        ripple
                     );
 
-                ripple.className =
-                    "ripple-effect";
 
-
-                const rect =
-                    this.getBoundingClientRect();
-
-
-                ripple.style.left =
-                    `${event.clientX - rect.left}px`;
-
-
-                ripple.style.top =
-                    `${event.clientY - rect.top}px`;
-
-
-                this.appendChild(ripple);
-
-
-                setTimeout(
-                    () => ripple.remove(),
-                    600
-                );
-            }
-        );
-    });
+                    setTimeout(
+                        () => ripple.remove(),
+                        600
+                    );
+                }
+            );
+        }
+    );
 
 
 /* =========================================
@@ -888,7 +1116,9 @@ currentCard.addEventListener(
 
         if (
             window.innerWidth < 800
-        ) return;
+        ) {
+            return;
+        }
 
 
         const rect =
@@ -896,11 +1126,13 @@ currentCard.addEventListener(
 
 
         const x =
-            event.clientX - rect.left;
+            event.clientX -
+            rect.left;
 
 
         const y =
-            event.clientY - rect.top;
+            event.clientY -
+            rect.top;
 
 
         const rotateY =
@@ -939,6 +1171,7 @@ form.addEventListener(
 
         event.preventDefault();
 
+
         const city =
             input.value.trim();
 
@@ -953,7 +1186,9 @@ form.addEventListener(
         }
 
 
-        pesquisarCidade(city);
+        pesquisarCidade(
+            city
+        );
     }
 );
 
@@ -977,40 +1212,6 @@ themeButton.addEventListener(
 
 
 /* =========================================
-   FAVORITO POR DUPLO CLIQUE
-========================================= */
-
-document
-    .getElementById("location-name")
-    .addEventListener(
-        "dblclick",
-        () => {
-
-            const location =
-                document
-                    .getElementById(
-                        "location-name"
-                    )
-                    .textContent
-                    .split(",")[0];
-
-
-            if (
-                location &&
-                location !== "Minha localização"
-            ) {
-
-                salvarFavorito(location);
-
-                alert(
-                    `${location} foi adicionada aos favoritos!`
-                );
-            }
-        }
-    );
-
-
-/* =========================================
    INICIALIZAÇÃO
 ========================================= */
 
@@ -1019,6 +1220,8 @@ document.addEventListener(
     () => {
 
         carregarTema();
+
+        criarBotaoFavorito();
 
         renderizarFavoritos();
 
@@ -1033,6 +1236,7 @@ document.addEventListener(
 
             input.value =
                 lastCity;
+
 
             pesquisarCidade(
                 lastCity

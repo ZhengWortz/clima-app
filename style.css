@@ -153,6 +153,187 @@ body.weather-night {
 
 
 /* =========================================
+   MODO CLARO
+========================================= */
+
+body.light-theme {
+
+    --background: #eef7fc;
+    --background-secondary: #d7ebf5;
+
+    --glass: rgba(255, 255, 255, 0.70);
+    --glass-strong: rgba(255, 255, 255, 0.90);
+
+    --border: rgba(20, 50, 70, 0.14);
+
+    --text: #17212b;
+    --text-secondary: #34495a;
+    --text-muted: #607585;
+
+    --shadow:
+        0 25px 80px rgba(30, 70, 100, 0.15);
+
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(70, 180, 255, 0.18),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 80% 80%,
+            rgba(120, 90, 255, 0.12),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            var(--background),
+            var(--background-secondary)
+        );
+
+    color: var(--text);
+}
+
+
+/* =========================================
+   MODO CLARO + CLIMA
+   Mantém o clima visual, mas claro.
+========================================= */
+
+body.light-theme.weather-sunny {
+
+    --accent: #d79b00;
+
+    background:
+        radial-gradient(
+            circle at 20% 10%,
+            rgba(255, 209, 102, 0.35),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #f8fbdf,
+            #dff2fa
+        );
+}
+
+
+body.light-theme.weather-rain {
+
+    --accent: #168fc0;
+
+    background:
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(70, 190, 255, 0.22),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #e8f5fb,
+            #d7eaf4
+        );
+}
+
+
+body.light-theme.weather-cloudy {
+
+    --accent: #557080;
+
+    background:
+        radial-gradient(
+            circle at 30% 10%,
+            rgba(180, 200, 220, 0.28),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #edf3f6,
+            #dce7ec
+        );
+}
+
+
+body.light-theme.weather-night {
+
+    --accent: #6955c7;
+
+    background:
+        radial-gradient(
+            circle at 75% 20%,
+            rgba(130, 110, 255, 0.18),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #e9e9f7,
+            #dfe3f1
+        );
+}
+
+
+/* =========================================
+   LIGHT THEME - ELEMENTOS GERAIS
+========================================= */
+
+body.light-theme .glass {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.82),
+            rgba(255, 255, 255, 0.58)
+        );
+
+    border-color:
+        rgba(20, 50, 70, 0.13);
+
+    box-shadow:
+        var(--shadow);
+}
+
+
+body.light-theme .glass::before {
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 0, 0, 0.12),
+            transparent
+        );
+}
+
+
+body.light-theme .brand-icon {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.95),
+            rgba(220, 235, 245, 0.75)
+        );
+}
+
+
+body.light-theme .icon-button {
+
+    background: rgba(255, 255, 255, 0.70);
+
+    color: #17212b;
+
+    border-color:
+        rgba(20, 50, 70, 0.14);
+}
+
+
+body.light-theme .icon-button:hover {
+
+    background:
+        rgba(255, 255, 255, 0.95);
+}
+
+
+/* =========================================
    AMBIENT LIGHT
 ========================================= */
 
@@ -173,7 +354,8 @@ body.weather-night {
 
     z-index: -2;
 
-    animation: floatLight 10s ease-in-out infinite alternate;
+    animation:
+        floatLight 10s ease-in-out infinite alternate;
 }
 
 
@@ -276,6 +458,7 @@ body.weather-night {
     height: 44px;
 
     display: grid;
+
     place-items: center;
 
     border-radius: 14px;
@@ -455,8 +638,6 @@ body.weather-night {
 }
 
 
-/* Reflexo do vidro */
-
 .glass::before {
 
     content: "";
@@ -516,6 +697,7 @@ body.weather-night {
     position: absolute;
 
     left: 17px;
+
     top: 50%;
 
     transform: translateY(-50%);
@@ -694,7 +876,8 @@ body.weather-night {
 
     border-radius: 50%;
 
-    animation: spin .8s linear infinite;
+    animation:
+        spin .8s linear infinite;
 }
 
 
@@ -801,6 +984,7 @@ body.weather-night {
     height: 90px;
 
     display: grid;
+
     place-items: center;
 
     border-radius: 28px;
@@ -1267,6 +1451,143 @@ footer {
 
 
 /* =========================================
+   CORREÇÕES DO MODO CLARO
+========================================= */
+
+body.light-theme .search-input-wrapper input {
+
+    color: #17212b;
+
+    background:
+        rgba(255,255,255,.80);
+
+    border-color:
+        rgba(20,50,70,.15);
+}
+
+
+body.light-theme .search-input-wrapper input::placeholder {
+
+    color: #607585;
+}
+
+
+body.light-theme .primary-button {
+
+    color: #17212b;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            #ffffff
+        );
+}
+
+
+body.light-theme .secondary-button {
+
+    color: #34495a;
+
+    background:
+        rgba(255,255,255,.60);
+
+    border-color:
+        rgba(20,50,70,.14);
+}
+
+
+body.light-theme .secondary-button:hover {
+
+    color: #17212b;
+
+    background:
+        rgba(255,255,255,.90);
+}
+
+
+body.light-theme .weather-icon {
+
+    background:
+        rgba(255,255,255,.55);
+}
+
+
+body.light-theme .stat {
+
+    background:
+        rgba(255,255,255,.45);
+
+    border-color:
+        rgba(20,50,70,.12);
+}
+
+
+body.light-theme .stat:hover {
+
+    background:
+        rgba(255,255,255,.75);
+}
+
+
+body.light-theme .forecast-card {
+
+    background:
+        rgba(255,255,255,.48);
+
+    border-color:
+        rgba(20,50,70,.12);
+}
+
+
+body.light-theme .forecast-card:hover {
+
+    background:
+        rgba(255,255,255,.80);
+
+    border-color:
+        rgba(20,50,70,.20);
+
+    box-shadow:
+        0 15px 40px rgba(30,70,100,.12);
+}
+
+
+body.light-theme .favorite {
+
+    color: #34495a;
+
+    background:
+        rgba(255,255,255,.55);
+
+    border-color:
+        rgba(20,50,70,.13);
+}
+
+
+body.light-theme .favorite:hover {
+
+    color: #17212b;
+
+    background:
+        rgba(255,255,255,.85);
+}
+
+
+body.light-theme .favorite-remove {
+
+    color: #607585;
+}
+
+
+body.light-theme footer {
+
+    border-top-color:
+        rgba(20,50,70,.13);
+}
+
+
+/* =========================================
    MOBILE
 ========================================= */
 
@@ -1402,4 +1723,8 @@ footer {
 
         gap: 8px;
     }
+}
+
+#favorite-current-button {
+    margin-top: 20px;
 }

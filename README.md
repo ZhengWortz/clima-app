@@ -1,43 +1,75 @@
-# 🌤️ App de Previsão do Tempo
+# 🌦️ ClimaVision
 
-Um aplicativo simples, bonito e funcional que mostra o clima atual e previsão de 5 dias de qualquer cidade do mundo — feito com **JavaScript puro**!
+> Uma experiência meteorológica imersiva desenvolvida com HTML, CSS e JavaScript.
 
-🚀 [Veja a versão online aqui](https://clima-app-henna.vercel.app)
+ClimaVision é uma aplicação web de previsão do tempo desenvolvida com foco em **UI Engineering, Computação Gráfica aplicada à interface e experiência mobile-first**.
 
----
+O projeto transforma uma aplicação tradicional de consulta meteorológica em uma experiência visual baseada em:
 
-## 🖼️ Imagem do Projeto
-
-![App de Clima](screenshots/app-preview.png)
-
----
-
-## ✨ Funcionalidades
-
-- 🔍 Busca por cidade ou estado (ex: "São Paulo", "BA", "Bahia")
-- 🌍 Geolocalização automática (mostra clima da sua localização)
-- 🌙 Modo escuro / claro com transição suave
-- ⭐ Salva cidades favoritas no `localStorage`
-- 🌦️ Backgrounds temáticos (mudam conforme o clima: sol, chuva, neve, etc.)
-- 📅 Previsão do tempo para os próximos 5 dias
-- 📱 Totalmente responsivo (funciona em mobile e desktop)
-- 💬 Interface em português do Brasil
+- Glassmorphism
+- Glow e iluminação dinâmica
+- Microinterações
+- Parallax
+- Animações
+- Backgrounds dinâmicos
+- Interface responsiva
+- Persistência de favoritos
+- Consumo de API meteorológica
 
 ---
 
-## 🔧 Tecnologias Utilizadas
+## ✨ Preview
 
-- **HTML5** – Estrutura da página
-- **CSS3** – Estilos e animações
-- **JavaScript (Vanilla)** – Lógica, interações e consumo de API
-- **API do OpenWeatherMap** – Dados climáticos em tempo real
-- **LocalStorage** – Armazenamento de cidades favoritas
-- **Geolocation API** – Detecção da localização do usuário
+### Desktop
+
+![Preview Desktop](screenshots/desktop.png)
+
+### Mobile
+
+![Preview Mobile](screenshots/mobile.png)
+
+### 🎬 Demonstração
+
+> Adicione aqui um GIF ou vídeo curto mostrando as animações da interface.
 
 ---
 
-## 🚀 Como Usar
+# 🚀 Funcionalidades
 
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/ZhengWortz/clima-app.git
+## 🌎 Consulta meteorológica
+
+O usuário pode pesquisar qualquer cidade através da barra de pesquisa.
+
+A aplicação apresenta:
+
+- Temperatura atual
+- Sensação térmica
+- Umidade
+- Velocidade do vento
+- Cobertura de nuvens
+- Probabilidade de chuva
+- Condição meteorológica
+
+---
+
+## 📅 Previsão
+
+A aplicação apresenta a previsão dos próximos dias através de cards interativos.
+
+Cada card apresenta:
+
+- Dia
+- Ícone meteorológico
+- Temperatura máxima
+- Temperatura mínima
+
+---
+
+## 📍 Geolocalização
+
+O usuário pode utilizar sua localização atual para consultar o clima.
+
+A funcionalidade utiliza a:
+
+```text
+Geolocation API

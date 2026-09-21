@@ -1,34 +1,347 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🌤️ Previsão do Tempo</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="ClimaVision - Aplicação meteorológica com interface imersiva."
+    >
+
+    <title>ClimaVision — Weather Experience</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="light-mode">
-  <div class="container">
-    <header>
-      <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Sol" width="30" height="30" />
-      <h1>Previsão do Tempo</h1>
-      <p>Descubra o clima de qualquer cidade do mundo!</p>
-    </header>
 
-    <form id="search-form">
-      <input type="text" id="cidade" placeholder="Digite uma cidade..." autocomplete="off" />
-      <button type="submit">🔍 Buscar</button>
-    </form>
+<body class="weather-default">
 
-    <div class="buttons">
-      <button onclick="obterClimaPorLocalizacao()">🌍 Minha Localização</button>
-      <button onclick="alternarTema()">🌙 Modo Escuro</button>
-    </div>
+    <!-- Camadas de iluminação -->
+    <div class="ambient-light light-one"></div>
+    <div class="ambient-light light-two"></div>
+    <div class="noise"></div>
 
-    <div id="resultado"></div>
-    <div id="previsao"></div>
-    <div id="favoritos"></div>
-  </div>
+    <main class="app">
 
-  <script src="script.js"></script>
+        <!-- HEADER -->
+        <header class="topbar">
+
+            <div class="brand">
+                <div class="brand-icon">
+                    ☁
+                </div>
+
+                <div>
+                    <span class="brand-name">ClimaVision</span>
+                    <span class="brand-subtitle">
+                        Weather Experience
+                    </span>
+                </div>
+            </div>
+
+            <button
+                id="theme-button"
+                class="icon-button"
+                type="button"
+                aria-label="Alternar tema"
+            >
+                ◐
+            </button>
+
+        </header>
+
+
+        <!-- HERO -->
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <span class="eyebrow">
+                    LIVE WEATHER
+                </span>
+
+                <h1>
+                    O clima ao seu redor,
+                    <span>em uma nova dimensão.</span>
+                </h1>
+
+                <p>
+                    Consulte as condições atuais e acompanhe
+                    a previsão dos próximos dias.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- SEARCH -->
+        <section class="search-section glass">
+
+            <form id="search-form">
+
+                <div class="search-input-wrapper">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input
+                        id="cidade"
+                        type="text"
+                        placeholder="Digite uma cidade..."
+                        autocomplete="off"
+                        aria-label="Nome da cidade"
+                    >
+
+                </div>
+
+                <button
+                    class="primary-button ripple"
+                    type="submit"
+                >
+                    <span>Pesquisar</span>
+                    <span>→</span>
+                </button>
+
+            </form>
+
+
+            <div class="quick-actions">
+
+                <button
+                    id="location-button"
+                    class="secondary-button ripple"
+                    type="button"
+                >
+                    ◉ Minha localização
+                </button>
+
+                <button
+                    id="clear-button"
+                    class="secondary-button ripple"
+                    type="button"
+                >
+                    Limpar
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- LOADING -->
+        <div id="loading" class="loading glass hidden">
+
+            <div class="loader"></div>
+
+            <span>
+                Buscando informações meteorológicas...
+            </span>
+
+        </div>
+
+
+        <!-- ERROR -->
+        <div
+            id="error-message"
+            class="error-message glass hidden"
+        ></div>
+
+
+        <!-- WEATHER -->
+        <section
+            id="weather-content"
+            class="weather-content hidden"
+        >
+
+            <!-- CLIMA ATUAL -->
+            <article
+                id="current-weather"
+                class="current-card glass"
+            >
+
+                <div class="card-glow"></div>
+
+                <div class="current-top">
+
+                    <div>
+
+                        <span class="label">
+                            AGORA
+                        </span>
+
+                        <h2 id="location-name">
+                            Salvador
+                        </h2>
+
+                        <p id="current-date">
+                            —
+                        </p>
+
+                    </div>
+
+                    <div
+                        id="weather-icon"
+                        class="weather-icon"
+                    >
+                        ☀
+                    </div>
+
+                </div>
+
+
+                <div class="temperature-area">
+
+                    <span id="temperature">
+                        0°
+                    </span>
+
+                    <div>
+
+                        <strong id="weather-description">
+                            —
+                        </strong>
+
+                        <span id="feels-like">
+                            Sensação de 0°
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INDICADORES -->
+                <div class="weather-stats">
+
+                    <div class="stat">
+                        <span class="stat-icon">💧</span>
+
+                        <div>
+                            <small>Umidade</small>
+                            <strong id="humidity">0%</strong>
+                        </div>
+                    </div>
+
+
+                    <div class="stat">
+                        <span class="stat-icon">💨</span>
+
+                        <div>
+                            <small>Vento</small>
+                            <strong id="wind">0 km/h</strong>
+                        </div>
+                    </div>
+
+
+                    <div class="stat">
+                        <span class="stat-icon">☁</span>
+
+                        <div>
+                            <small>Nuvens</small>
+                            <strong id="clouds">0%</strong>
+                        </div>
+                    </div>
+
+
+                    <div class="stat">
+                        <span class="stat-icon">☔</span>
+
+                        <div>
+                            <small>Chuva</small>
+                            <strong id="rain">0%</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- PREVISÃO -->
+            <section class="forecast-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="label">
+                            PRÓXIMOS DIAS
+                        </span>
+
+                        <h2>
+                            Previsão
+                        </h2>
+                    </div>
+
+                    <span class="forecast-status">
+                        6 dias
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="forecast"
+                    class="forecast-grid"
+                ></div>
+
+            </section>
+
+
+            <!-- FAVORITOS -->
+            <section class="favorites-section glass">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="label">
+                            SEUS LOCAIS
+                        </span>
+
+                        <h2>
+                            Favoritos
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="favorites"
+                    class="favorites-list"
+                >
+                    <p class="empty-state">
+                        Nenhuma cidade favorita.
+                    </p>
+                </div>
+
+            </section>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer>
+
+            <span>
+                ClimaVision
+            </span>
+
+            <span>
+                Weather data powered by Open-Meteo
+            </span>
+
+        </footer>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
 </body>
 </html>

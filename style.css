@@ -1728,3 +1728,226 @@ body.light-theme footer {
 #favorite-current-button {
     margin-top: 20px;
 }
+
+/* =========================================
+   AUTOCOMPLETE DA PESQUISA
+========================================= */
+
+/*
+   Permite que a lista de sugestões
+   ultrapasse o painel de pesquisa.
+*/
+.search-section {
+
+    overflow: visible;
+
+    position: relative;
+
+    z-index: 50;
+}
+
+
+/*
+   Garante que o campo de pesquisa
+   fique acima dos outros elementos.
+*/
+.search-input-wrapper {
+
+    position: relative;
+
+    z-index: 100;
+}
+
+
+/* =========================================
+   LISTA DE SUGESTÕES
+========================================= */
+
+.suggestions {
+
+    position: absolute;
+
+    top: calc(100% + 8px);
+
+    left: 0;
+
+    right: 0;
+
+    width: 100%;
+
+    max-height: 280px;
+
+    overflow-y: auto;
+
+    background:
+        rgba(20, 34, 48, 0.97);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.35);
+
+    backdrop-filter: blur(24px);
+
+    -webkit-backdrop-filter: blur(24px);
+
+    z-index: 9999;
+
+    display: none;
+
+}
+
+
+/* =========================================
+   ITEM
+========================================= */
+
+.suggestion-item {
+
+    padding: 14px 18px;
+
+    color: var(--text);
+
+    cursor: pointer;
+
+    border-bottom:
+        1px solid var(--border);
+
+    transition:
+        background .2s ease,
+        padding-left .2s ease;
+
+}
+
+
+/* Último item sem linha */
+
+.suggestion-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+/* =========================================
+   HOVER
+========================================= */
+
+.suggestion-item:hover {
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    padding-left: 22px;
+
+}
+
+
+/* =========================================
+   NOME DO LOCAL
+========================================= */
+
+.suggestion-name {
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    line-height: 1.3;
+
+}
+
+
+/* =========================================
+   ESTADO / PAÍS
+========================================= */
+
+.suggestion-location {
+
+    margin-top: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+
+    line-height: 1.3;
+
+}
+
+
+/* =========================================
+   BARRA DE ROLAGEM
+========================================= */
+
+.suggestions::-webkit-scrollbar {
+
+    width: 6px;
+
+}
+
+
+.suggestions::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+
+.suggestions::-webkit-scrollbar-thumb {
+
+    background:
+        rgba(255, 255, 255, 0.18);
+
+    border-radius: 10px;
+
+}
+
+
+/* =========================================
+   TEMA CLARO
+========================================= */
+
+body.light-theme .suggestions {
+
+    background:
+        rgba(255, 255, 255, 0.97);
+
+    box-shadow:
+        0 18px 45px rgba(30, 70, 100, 0.20);
+
+}
+
+
+body.light-theme .suggestion-item:hover {
+
+    background:
+        rgba(20, 50, 70, 0.07);
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .suggestions {
+
+        max-height: 240px;
+
+        border-radius: 14px;
+
+    }
+
+
+    .suggestion-item {
+
+        padding: 13px 15px;
+
+    }
+
+}

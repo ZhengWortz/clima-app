@@ -35,6 +35,13 @@ const forecast =
 const favorites =
     document.getElementById("favorites");
 
+const suggestions =
+    document.getElementById("suggestions");
+
+let localSelecionado = null;
+
+let timeoutSugestoes = null;
+
 
 /* =========================================
    CÓDIGOS METEOROLÓGICOS
@@ -181,29 +188,245 @@ async function buscarCidade(nome) {
     const url =
         `https://geocoding-api.open-meteo.com/v1/search?` +
         `name=${encodeURIComponent(nome)}` +
-        `&count=1` +
+        `&count=10` +
         `&language=pt` +
         `&format=json`;
 
-    const response = await fetch(url);
+
+    const response =
+        await fetch(url);
+
 
     if (!response.ok) {
 
         throw new Error(
             "Não foi possível localizar a cidade."
         );
+
     }
 
-    const data = await response.json();
 
-    if (!data.results || data.results.length === 0) {
+    const data =
+        await response.json();
+
+
+    if (
+        !data.results ||
+        data.results.length === 0
+    ) {
 
         throw new Error(
-            "Cidade não encontrada. Tente outro nome."
+            "Local não encontrado. Tente outro nome."
         );
+
     }
 
-    return data.results[0];
+
+    return data.results;
+
+}
+
+
+/* =========================================
+   AUTOCOMPLETE
+========================================= */
+
+async function buscarSugestoes(nome) {
+
+    if (
+        !nome ||
+        nome.length < 2
+    ) {
+
+        suggestions.innerHTML = "";
+
+        suggestions.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    try {
+
+        const locais =
+            await buscarCidade(nome);
+
+
+        suggestions.innerHTML = "";
+
+
+        locais.forEach(
+            local => {
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "suggestion-item";
+
+
+                const nomeLocal =
+                    local.name ||
+                    "Local desconhecido";
+
+
+                const estado =
+                    local.admin1 ||
+                    "";
+
+
+                const pais =
+                    local.country ||
+                    "";
+
+
+                let descricao = "";
+
+
+                if (
+                    estado &&
+                    pais
+                ) {
+
+                    descricao =
+                        `${estado}, ${pais}`;
+
+                }
+
+                else if (pais) {
+
+                    descricao =
+                        pais;
+
+                }
+
+                else if (estado) {
+
+                    descricao =
+                        estado;
+
+                }
+
+
+                item.innerHTML = `
+
+                    <div
+                        class="suggestion-name"
+                    >
+                        📍 ${nomeLocal}
+                    </div>
+
+                    <div
+                        class="suggestion-location"
+                    >
+                        ${descricao}
+                    </div>
+
+                `;
+
+
+                item.addEventListener(
+                    "click",
+                    () => {
+
+                        selecionarLocal(
+                            local
+                        );
+
+                    }
+                );
+
+
+                suggestions.appendChild(
+                    item
+                );
+
+            }
+        );
+
+
+        if (
+            locais.length > 0
+        ) {
+
+            suggestions.style.display =
+                "block";
+
+        }
+
+        else {
+
+            suggestions.style.display =
+                "none";
+
+        }
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Erro no autocomplete:",
+            error
+        );
+
+
+        suggestions.innerHTML = "";
+
+        suggestions.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================================
+   SELECIONAR LOCAL
+========================================= */
+
+function selecionarLocal(local) {
+
+    localSelecionado =
+        local;
+
+
+    let texto =
+        local.name;
+
+
+    if (local.admin1) {
+
+        texto +=
+            `, ${local.admin1}`;
+
+    }
+
+
+    if (local.country) {
+
+        texto +=
+            `, ${local.country}`;
+
+    }
+
+
+    input.value =
+        texto;
+
+
+    suggestions.innerHTML =
+        "";
+
+    suggestions.style.display =
+        "none";
+
 }
 
 
@@ -251,8 +474,37 @@ async function pesquisarCidade(nome) {
 
         esconderErro();
 
-        const cidade =
-            await buscarCidade(nome);
+
+        let cidade;
+
+
+        /* =====================================
+           LOCAL ESCOLHIDO NO AUTOCOMPLETE
+        ===================================== */
+
+        if (localSelecionado) {
+
+            cidade =
+                localSelecionado;
+
+        }
+
+
+        /* =====================================
+           PESQUISA NORMAL
+        ===================================== */
+
+        else {
+
+            const resultados =
+                await buscarCidade(nome);
+
+
+            cidade =
+                resultados[0];
+
+        }
+
 
         const clima =
             await buscarClima(
@@ -260,22 +512,47 @@ async function pesquisarCidade(nome) {
                 cidade.longitude
             );
 
+
+        let nomeExibicao =
+            cidade.name;
+
+
+        if (cidade.admin1) {
+
+            nomeExibicao +=
+                `, ${cidade.admin1}`;
+
+        }
+
+
         renderizarClima(
             clima,
-            cidade.name,
+            nomeExibicao,
             cidade.country
         );
 
-        salvarUltimaCidade(nome);
 
-    } catch (error) {
+        salvarUltimaCidade(
+            nomeExibicao
+        );
 
-        mostrarErro(error.message);
 
-    } finally {
+    }
+
+    catch (error) {
+
+        mostrarErro(
+            error.message
+        );
+
+    }
+
+    finally {
 
         mostrarLoading(false);
+
     }
+
 }
 
 
@@ -1035,6 +1312,13 @@ function limparTela() {
 
     input.value = "";
 
+    localSelecionado = null;
+
+    suggestions.innerHTML = "";
+
+    suggestions.style.display =
+    "none";
+
 
     document.body.classList.remove(
         "weather-sunny",
@@ -1164,6 +1448,41 @@ currentCard.addEventListener(
 /* =========================================
    EVENTOS
 ========================================= */
+
+/* =========================================
+   AUTOCOMPLETE AO DIGITAR
+========================================= */
+
+input.addEventListener(
+    "input",
+    () => {
+
+        localSelecionado = null;
+
+
+        clearTimeout(
+            timeoutSugestoes
+        );
+
+
+        const texto =
+            input.value.trim();
+
+
+        timeoutSugestoes =
+            setTimeout(
+                () => {
+
+                    buscarSugestoes(
+                        texto
+                    );
+
+                },
+                400
+            );
+
+    }
+);
 
 form.addEventListener(
     "submit",
